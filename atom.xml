@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Kenny Ha</title>
+  <icon>https://notes.kinokonoko.io/icon.png</icon>
+  
+  <link href="https://notes.kinokonoko.io/atom.xml" rel="self"/>
+  
+  <link href="https://notes.kinokonoko.io/"/>
+  <updated>2025-02-12T17:17:18.172Z</updated>
+  <id>https://notes.kinokonoko.io/</id>
+  
+  <author>
+    <name>Kenny Ha</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する</title>
+    <link href="https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html"/>
+    <id>https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html</id>
+    <published>2025-02-12T16:04:25.000Z</published>
+    <updated>2025-02-12T17:17:18.172Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;アプリがユーザーのスクリーンショットや画面録画を検知したいケースは意外とあります。たとえば、銀行アプリなどではセキュリティ対策として一般的です。&lt;br&gt;ゲームアプリでは、スクリーンショットを検出することで演出の幅を広げたり、新しい機能を提案したりすることができます。たとえば</summary>
+        
+      
+    
+    
+    
+    
+    <category term="iOS" scheme="https://notes.kinokonoko.io/tags/iOS/"/>
+    
+    <category term="Unity" scheme="https://notes.kinokonoko.io/tags/Unity/"/>
+    
+    <category term="開発メモ" scheme="https://notes.kinokonoko.io/tags/%E9%96%8B%E7%99%BA%E3%83%A1%E3%83%A2/"/>
+    
+  </entry>
+  
+</feed>

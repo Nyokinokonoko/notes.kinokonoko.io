@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="アプリがユーザーのスクリーンショットや画面録画を検知したいケースは意外とあります。たとえば、銀行アプリなどではセキュリティ対策として一般的です。ゲームアプリでは、スクリーンショットを検出することで演出の幅を広げたり、新しい機能を提案したりすることができます。たとえば、ガチャ結果の画面でスクリーンショットを撮影した際に、アプリ内の共有機能を案内する。または、キャラクターとのインタラクション時にスクリ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する">
+<meta property="og:url" content="https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html">
+<meta property="og:site_name" content="Kenny Ha">
+<meta property="og:description" content="アプリがユーザーのスクリーンショットや画面録画を検知したいケースは意外とあります。たとえば、銀行アプリなどではセキュリティ対策として一般的です。ゲームアプリでは、スクリーンショットを検出することで演出の幅を広げたり、新しい機能を提案したりすることができます。たとえば、ガチャ結果の画面でスクリーンショットを撮影した際に、アプリ内の共有機能を案内する。または、キャラクターとのインタラクション時にスクリ">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-12T16:04:25.000Z">
+<meta property="article:modified_time" content="2025-02-12T17:17:18.172Z">
+<meta property="article:author" content="Kenny Ha">
+<meta property="article:tag" content="iOS">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="開発メモ">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WWZ28EE6XE"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WWZ28EE6XE');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="Kenny Ha" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&text=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&is_video=false&description=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する&body=Check out this article: https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&name=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&t=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS-%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%E3%81%A8%E7%94%BB%E9%9D%A2%E9%8C%B2%E7%94%BB%E3%82%92%E3%80%8C%E9%80%9A%E7%9F%A5%E3%80%8D%E3%81%99%E3%82%8B%E4%BB%95%E7%B5%84%E3%81%BF"><span class="toc-number">1.</span> <span class="toc-text">iOS のスクリーンショットと画面録画を「通知」する仕組み</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GitHub-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA"><span class="toc-number">1.1.</span> <span class="toc-text">GitHub リポジトリ</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA"><span class="toc-number">2.</span> <span class="toc-text">ネイティブライブラリ</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9"><span class="toc-number">2.1.</span> <span class="toc-text">コールバック関数の定義</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="toc-number">2.2.</span> <span class="toc-text">コールバックの設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%BB%E9%9D%A2%E9%8C%B2%E7%94%BB%EF%BC%86%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%E3%81%AE%E7%9B%A3%E8%A6%96%E9%96%8B%E5%A7%8B-EnterCaptureProhibitSession"><span class="toc-number">2.3.</span> <span class="toc-text">画面録画＆スクリーンショットの監視開始 (EnterCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%A3%E8%A6%96%E3%81%AE%E7%B5%82%E4%BA%86-ExitCaptureProhibitSession"><span class="toc-number">2.4.</span> <span class="toc-text">監視の終了 (ExitCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8F%BE%E5%9C%A8%E3%81%AE%E9%8C%B2%E7%94%BB%E7%8A%B6%E6%85%8B%E3%82%92%E5%8F%96%E5%BE%97-CheckCaptureStatus"><span class="toc-number">2.5.</span> <span class="toc-text">現在の録画状態を取得(CheckCaptureStatus)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E3%82%B3%E3%83%BC%E3%83%89"><span class="toc-number">3.</span> <span class="toc-text">C#コード</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%83%87%E3%83%AA%E3%82%B2%E3%83%BC%E3%83%88%EF%BC%88%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E9%96%A2%E6%95%B0%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">デリゲート（コールバック関数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%A3%E8%A6%96%E9%96%8B%E5%A7%8B-EnterCaptureProhibitSession"><span class="toc-number">3.2.</span> <span class="toc-text">監視開始 (EnterCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%A3%E8%A6%96%E3%81%AE%E5%81%9C%E6%AD%A2-ExitCaptureProhibitSession"><span class="toc-number">3.3.</span> <span class="toc-text">監視の停止 (ExitCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%81%AE%E9%80%A3%E6%90%BA"><span class="toc-number">3.4.</span> <span class="toc-text">ネイティブコードとの連携</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9F%E9%9A%9B%E3%81%93%E3%81%AE-C-%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%B9%E3%82%AF%E3%82%B7%E3%83%A7%E3%82%84%E9%8C%B2%E7%94%BB%E3%82%92%E6%A4%9C%E5%87%BA%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"><span class="toc-number">4.</span> <span class="toc-text">実際この C#コードを使ってスクショや録画を検出してみる</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="toc-number">5.</span> <span class="toc-text">まとめ</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8A%E5%BE%8C%E3%81%AE%E5%B1%95%E6%9C%9B"><span class="toc-number">5.1.</span> <span class="toc-text">今後の展望</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Kenny Ha</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-12T16:04:25.000Z" class="dt-published" itemprop="datePublished">2025-02-13</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Unity/" rel="tag">Unity</a>, <a class="p-category" href="/tags/iOS/" rel="tag">iOS</a>, <a class="p-category" href="/tags/%E9%96%8B%E7%99%BA%E3%83%A1%E3%83%A2/" rel="tag">開発メモ</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>アプリがユーザーのスクリーンショットや画面録画を検知したいケースは意外とあります。たとえば、銀行アプリなどではセキュリティ対策として一般的です。<br>ゲームアプリでは、スクリーンショットを検出することで演出の幅を広げたり、新しい機能を提案したりすることができます。たとえば、ガチャ結果の画面でスクリーンショットを撮影した際に、アプリ内の共有機能を案内する。または、キャラクターとのインタラクション時にスクリーンショットを撮ったら、「もぉ～、いきなり撮らないでよ～！」といった、第四の壁をくすぐる演出を加えることも可能です。<br>本記事では、iOS 上でスクリーンショットや画面録画を Unity アプリ側で検知する方法について、実装の試行過程を記録していきます。</p>
+<h2 id="iOS-のスクリーンショットと画面録画を「通知」する仕組み"><a href="#iOS-のスクリーンショットと画面録画を「通知」する仕組み" class="headerlink" title="iOS のスクリーンショットと画面録画を「通知」する仕組み"></a>iOS のスクリーンショットと画面録画を「通知」する仕組み</h2><p>ここで言う「通知」とは、エンドユーザーに送るプッシュ通知ではなく、システムがイベントの発生をアプリに伝える仕組みを指します。<br>iOS では、<code>NSNotification</code>という通知クラスがあり、さまざまなシステムイベントの発生をアプリに通知できます。たとえば、<code>AVAudioSessionMicrophoneInjectionCapabilitiesChangeNotification</code>（長いですね…）は、「音声入力の介入が可能かどうか」が変わるたびに発火する通知です。</p>
+<p>今回の記事では、<code>UIScreenCapturedDidChangeNotification</code>と<code>UIApplicationUserDidTakeScreenshotNotification</code>を使用して、画面録画とスクリーンショットの検出を行います。<br>前者の<code>UIScreenCapturedDidChangeNotification</code>は、画面録画の状態が変わったときに発火する通知です。この通知を監視していれば、ユーザーが画面録画を開始・終了するたびにアプリが検知できます。<br>後者の<code>UIApplicationUserDidTakeScreenshotNotification</code>はシンプルで、スクリーンショットが撮影されるたびに発火する通知です。</p>
+<p>Unity のフレームワーク内では、iOS の通知を直接監視することはできません。<br>そのため、iOS のシステム機能を利用するには、ネイティブライブラリを作成し、Unity アプリ内の C#から呼び出す必要があります。<br>この「相互運用（Interop）」という手法は、iOS に限らず、各プラットフォームで活用可能です。</p>
+<p>ここからは、Unity アプリで通知を検出できるようにするため、ネイティブライブラリを作成し、C#から呼び出す方法を解説していきます。</p>
+<h3 id="GitHub-リポジトリ"><a href="#GitHub-リポジトリ" class="headerlink" title="GitHub リポジトリ"></a>GitHub リポジトリ</h3><p>サンプルコード（ネイティブライブラリと C# プラグイン）を公開している GitHub リポジトリがあります。ビルド済みのライブラリも提供しており、C# プラグインは UPM (Unity Package Manager) 形式 でホストしています。ぜひこちらのリポジトリを利用して、効果を試してみてください。 （[<a target="_blank" rel="noopener" href="https://github.com/Nyokinokonoko/ScreenshotNotifier">GitHub リポジトリ</a>]）<br>ページの長さを配慮して、以下のソースコードを切り取って説明します。</p>
+<h2 id="ネイティブライブラリ"><a href="#ネイティブライブラリ" class="headerlink" title="ネイティブライブラリ"></a>ネイティブライブラリ</h2><p>この ScreenshotNotifier.mm は、iOS の NSNotification を利用して画面録画とスクリーンショットの検出を行うネイティブライブラリのソースです。<br>ビルド方法は割愛しますが、ネット上で iOS ネイティブライブラリのビルド方法に関する記事が多くあります。</p>
+<p>[<a target="_blank" rel="noopener" href="https://github.com/Nyokinokonoko/ScreenshotNotifier/blob/main/NativePlugin/ios/src/ScreenshotNotifier.mm">ScreenshotNotifier.mm のソースコードはこちらから</a>]（以下、一部切り取って説明します）</p>
+<p>この ScreenshotNotifier.mm は、iOS のスクリーンショット撮影および画面録画の状態を検出し、Unity アプリ側に通知するためのネイティブライブラリです。ObjectiveC++ を使用しており、C 言語の extern “C” を利用して Unity の C# から呼び出せる形になっています。</p>
+<h3 id="コールバック関数の定義"><a href="#コールバック関数の定義" class="headerlink" title="コールバック関数の定義"></a>コールバック関数の定義</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">void</span> (*ScreenRecordingStatusChangedCallback)(<span class="type">bool</span>);</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span> (*ScreenshotDetectedCallback)();</span><br></pre></td></tr></table></figure>
+
+<p>この部分では、Unity 側から渡されるコールバック関数の型を定義しています。</p>
+<ul>
+<li>ScreenRecordingStatusChangedCallback は、画面録画の開始・終了時に bool 値（録画中かどうか）を引数に持ちます。</li>
+<li>ScreenshotDetectedCallback は、スクリーンショット撮影時に呼び出されるコールバックで、引数はありません。</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> ScreenRecordingStatusChangedCallback screenRecordingStatusChangedCallback = <span class="literal">NULL</span>;</span><br><span class="line"><span class="keyword">static</span> ScreenshotDetectedCallback screenshotDetectedCallback = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+
+<p>これらの変数は、Unity から登録されたコールバック関数を保持するためのグローバル変数です。</p>
+<h3 id="コールバックの設定"><a href="#コールバックの設定" class="headerlink" title="コールバックの設定"></a>コールバックの設定</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> SetScreenRecordingStatusChangedCallback(ScreenRecordingStatusChangedCallback callback) &#123;</span><br><span class="line">    screenRecordingStatusChangedCallback = callback;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> SetScreenshotDetectedCallback(ScreenshotDetectedCallback callback) &#123;</span><br><span class="line">    screenshotDetectedCallback = callback;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>これらの関数は、Unity 側から呼び出され、コールバック関数を設定する役割を持ちます。<br>Unity から SetScreenRecordingStatusChangedCallback に関数を渡すと、その関数が screenRecordingStatusChangedCallback に保存され、録画状態が変わるたびに実行されます。同様に SetScreenshotDetectedCallback もスクリーンショット検出時のコールバックを登録します。</p>
+<h3 id="画面録画＆スクリーンショットの監視開始-EnterCaptureProhibitSession"><a href="#画面録画＆スクリーンショットの監視開始-EnterCaptureProhibitSession" class="headerlink" title="画面録画＆スクリーンショットの監視開始 (EnterCaptureProhibitSession)"></a>画面録画＆スクリーンショットの監視開始 (EnterCaptureProhibitSession)</h3><p><code>EnterCaptureProhibitSession</code>関数は、画面録画とスクリーンショットの検出を開始するための監視セッションを開始します。</p>
+<p>(1) 初期状態の画面録画検出</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> isRecording = [<span class="built_in">UIScreen</span> mainScreen].isCaptured;</span><br><span class="line"><span class="keyword">if</span> (screenRecordingStatusChangedCallback) &#123;</span><br><span class="line">    screenRecordingStatusChangedCallback(isRecording);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>このコードでは、アプリ起動時や監視開始時にすでに録画が行われているかどうかをチェックし、コールバックを即座に実行して Unity 側に通知します。</p>
+<p>(2) 画面録画状態の監視</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">screenRecordingObserver = [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserverForName:<span class="built_in">UIScreenCapturedDidChangeNotification</span> object:<span class="literal">nil</span> queue:[<span class="built_in">NSOperationQueue</span> mainQueue] usingBlock:^(<span class="built_in">NSNotification</span> * _Nonnull note) &#123;</span><br><span class="line">    <span class="type">bool</span> isCaptured = [<span class="built_in">UIScreen</span> mainScreen].isCaptured;</span><br><span class="line">    <span class="keyword">if</span> (screenRecordingStatusChangedCallback) &#123;</span><br><span class="line">        screenRecordingStatusChangedCallback(isCaptured);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>UIScreenCapturedDidChangeNotification は、画面録画の開始・終了時に iOS システムから発火される通知です。</li>
+<li>addObserverForName を使い、この通知を受け取ると UIScreen.mainScreen.isCaptured の値を取得し、コールバックを実行して Unity 側に通知します。</li>
+</ul>
+<p>(3) スクリーンショットの検出</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">screenshotObserver = [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserverForName:<span class="built_in">UIApplicationUserDidTakeScreenshotNotification</span> object:<span class="literal">nil</span> queue:[<span class="built_in">NSOperationQueue</span> mainQueue] usingBlock:^(<span class="built_in">NSNotification</span> * _Nonnull note) &#123;</span><br><span class="line">    <span class="keyword">if</span> (screenshotDetectedCallback) &#123;</span><br><span class="line">        screenshotDetectedCallback();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>UIApplicationUserDidTakeScreenshotNotification は、スクリーンショットが撮影されるたびに発火する iOS の通知です。</li>
+<li>この通知を受け取ると、登録された screenshotDetectedCallback を実行し、Unity にスクリーンショットのイベントを通知します。</li>
+</ul>
+<h3 id="監視の終了-ExitCaptureProhibitSession"><a href="#監視の終了-ExitCaptureProhibitSession" class="headerlink" title="監視の終了 (ExitCaptureProhibitSession)"></a>監視の終了 (ExitCaptureProhibitSession)</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> ExitCaptureProhibitSession() &#123;</span><br><span class="line">    <span class="keyword">if</span> (screenRecordingObserver) &#123;</span><br><span class="line">        [[<span class="built_in">NSNotificationCenter</span> defaultCenter] removeObserver:screenRecordingObserver];</span><br><span class="line">        screenRecordingObserver = <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (screenshotObserver) &#123;</span><br><span class="line">        [[<span class="built_in">NSNotificationCenter</span> defaultCenter] removeObserver:screenshotObserver];</span><br><span class="line">        screenshotObserver = <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>この関数は、監視を解除するために使用されます。</p>
+<ul>
+<li>removeObserver を呼び出し、画面録画とスクリーンショットの監視を停止します。</li>
+<li>screenRecordingObserver や screenshotObserver を nil にすることで、不要なメモリ使用を防ぎます。</li>
+</ul>
+<h3 id="現在の録画状態を取得-CheckCaptureStatus"><a href="#現在の録画状態を取得-CheckCaptureStatus" class="headerlink" title="現在の録画状態を取得(CheckCaptureStatus)"></a>現在の録画状態を取得(CheckCaptureStatus)</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> CheckCaptureStatus() &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">UIScreen</span> mainScreen].isCaptured;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>UIScreen.mainScreen.isCaptured を直接参照し、現在の画面録画の状態を返します。</li>
+<li>監視を開始せずに、Unity 側から手動で現在の画面録画状態を取得したい場合に使用できます。</li>
+</ul>
+<p>改めてまとめますと、この ScreenshotNotifier.mm は、iOS の NSNotification を利用して画面録画とスクリーンショットの検出を行うネイティブライブラリです。<br>このネイティブライブラリを Unity から利用することで、iOS アプリでもスクリーンショットや画面録画の状態を検知し、適切なアクションを実行できるようになります。</p>
+<h2 id="C-コード"><a href="#C-コード" class="headerlink" title="C#コード"></a>C#コード</h2><p>Unity に戻って、C#側のコードを用意します。<br>この ScreenshotNotifier クラスは、iOS のスクリーンショットと画面録画の検出を Unity で扱うためのラッパーです。<br>DllImport(“__Internal”) を利用して、前述の ScreenshotNotifier.mm でビルドされたネイティブライブラリ （ObjectiveC++ ネイティブライブラリ）と相互運用（Interop）できるように設計されています。<br>ネイティブライブラリの導入方法については Unity 公式のマニュアルを参照してください。<br>また、このプロジェクトの<a target="_blank" rel="noopener" href="https://github.com/Nyokinokonoko/ScreenshotNotifier/tree/main/UnityPackage">配布されている UPM パッケージ</a>にもビルド済みのライブラリとその設定例が含まれております。</p>
+<p>[<a target="_blank" rel="noopener" href="https://github.com/Nyokinokonoko/ScreenshotNotifier/blob/main/UnityPackage/Runtime/Scripts/ScreenshotNotifier.cs">ScreenshotNotifier.cs のソースコードはこちらから</a>]（以下一部切り取って説明します）</p>
+<p>先頭にあるクラス定義や、状態管理フラグなどの説明はスキップします。</p>
+<h3 id="デリゲート（コールバック関数）"><a href="#デリゲート（コールバック関数）" class="headerlink" title="デリゲート（コールバック関数）"></a>デリゲート（コールバック関数）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">ScreenRecordingStatusChangedHandler</span>(<span class="params"><span class="built_in">bool</span> isRecording</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">ScreenshotDetectedHandler</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<p>ネイティブライブラリにあるコールバックと同じ形で用意します。</p>
+<ul>
+<li>ScreenRecordingStatusChangedHandler: 画面録画の開始・終了を通知するデリゲート（bool 引数あり）。</li>
+<li>ScreenshotDetectedHandler: スクリーンショット撮影を通知するデリゲート（引数なし）。</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">event</span> ScreenRecordingStatusChangedHandler OnScreenRecordingStatusChanged;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">event</span> ScreenshotDetectedHandler OnScreenshotDetected;</span><br></pre></td></tr></table></figure>
+
+<p>それぞれのイベント (OnScreenRecordingStatusChanged, OnScreenshotDetected) が発火すると、Unity 側のコードで登録されたハンドラーが呼び出される仕組みです。<br>例えば、Unity のスクリプトで ScreenshotNotifier.OnScreenshotDetected +&#x3D; SomeMethod; と登録すると、スクリーンショットが撮影されたときに SomeMethod が実行されます。</p>
+<h3 id="監視開始-EnterCaptureProhibitSession"><a href="#監視開始-EnterCaptureProhibitSession" class="headerlink" title="監視開始 (EnterCaptureProhibitSession)"></a>監視開始 (EnterCaptureProhibitSession)</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NativeMethods.SetScreenRecordingStatusChangedCallback(OnNativeScreenRecordingStatusChanged);</span><br><span class="line">NativeMethods.SetScreenshotDetectedCallback(OnNativeScreenshotDetected);</span><br><span class="line">NativeMethods.EnterCaptureProhibitSession();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ネイティブコード側の関数（ObjectiveC++）を呼び出して、イベントを登録します。</li>
+<li>OnNativeScreenRecordingStatusChanged と OnNativeScreenshotDetected をコールバック関数として設定します。</li>
+<li>EnterCaptureProhibitSession を呼び出して iOS の通知監視を開始します。</li>
+</ul>
+<h3 id="監視の停止-ExitCaptureProhibitSession"><a href="#監視の停止-ExitCaptureProhibitSession" class="headerlink" title="監視の停止 (ExitCaptureProhibitSession)"></a>監視の停止 (ExitCaptureProhibitSession)</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NativeMethods.SetScreenRecordingStatusChangedCallback(<span class="literal">null</span>);</span><br><span class="line">NativeMethods.SetScreenshotDetectedCallback(<span class="literal">null</span>);</span><br><span class="line">NativeMethods.ExitCaptureProhibitSession();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>コールバック関数を解除（null に設定）し、ネイティブ側の監視を停止します。</li>
+</ul>
+<h3 id="ネイティブコードとの連携"><a href="#ネイティブコードとの連携" class="headerlink" title="ネイティブコードとの連携"></a>ネイティブコードとの連携</h3><p>この部分では、C#コードからどうやってネイティブライブラリの関数を利用するを説明します。</p>
+<p>(1) コールバックの処理</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">AOT.MonoPInvokeCallback(typeof(ScreenRecordingStatusChangedHandler))</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">OnNativeScreenRecordingStatusChanged</span>(<span class="params"><span class="built_in">bool</span> isRecording</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    OnScreenRecordingStatusChanged?.Invoke(isRecording);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">AOT.MonoPInvokeCallback(typeof(ScreenshotDetectedHandler))</span>]</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">OnNativeScreenshotDetected</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    OnScreenshotDetected?.Invoke();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ネイティブ側から画面録画状態の変化を受け取ったとき、またはスクリーンショットが撮影されたときに実行されるコールバック関数です。</li>
+<li>?.Invoke(isRecording) により、リスナー（Unity 側で OnScreenRecordingStatusChanged に登録された関数）があれば実行します。</li>
+</ul>
+<p>(2) ネイティブメソッド (NativeMethods)<br>この NativeMethods クラスには、ネイティブコード（ObjectiveC++）とやりとりするための関数が定義されています。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">DllImport(<span class="string">&quot;__Internal&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">SetScreenRecordingStatusChangedCallback</span>(<span class="params">ScreenRecordingStatusChangedHandler callback</span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(<span class="string">&quot;__Internal&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">SetScreenshotDetectedCallback</span>(<span class="params">ScreenshotDetectedHandler callback</span>)</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(<span class="string">&quot;__Internal&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">EnterCaptureProhibitSession</span>()</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(<span class="string">&quot;__Internal&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">ExitCaptureProhibitSession</span>()</span>;</span><br><span class="line"></span><br><span class="line">[<span class="meta">DllImport(<span class="string">&quot;__Internal&quot;</span>)</span>]</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="built_in">bool</span> <span class="title">CheckCaptureStatus</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DllImport(“__Internal”) を使い、iOS のネイティブ関数（ScreenshotNotifier.mm）を直接呼び出しています。</li>
+<li>extern 修飾子を使って、ObjectiveC++ の関数を C# 側に公開します。</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">else</span> // #<span class="keyword">if</span> UNITY_IOS</span></span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetScreenRecordingStatusChangedCallback</span>(<span class="params">ScreenRecordingStatusChangedHandler callback</span>)</span> &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetScreenshotDetectedCallback</span>(<span class="params">ScreenshotDetectedHandler callback</span>)</span> &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">EnterCaptureProhibitSession</span>()</span> &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ExitCaptureProhibitSession</span>()</span> &#123;&#125;</span><br><span class="line"><span class="function"><span class="keyword">internal</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">CheckCaptureStatus</span>()</span> &#123; <span class="keyword">return</span> <span class="literal">false</span>; &#125;</span><br><span class="line"><span class="meta">#end</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>iOS 以外の環境では、これらの関数は空の処理となり、影響を与えません。</li>
+<li>CheckCaptureStatus は false を返し、常に録画されていないことを示します。</li>
+<li>この空実装を用意しない場合、iOS 以外の環境で実行する（コンパイルする）とき、定義されていない関数の参照が発生します。</li>
+</ul>
+<h2 id="実際この-C-コードを使ってスクショや録画を検出してみる"><a href="#実際この-C-コードを使ってスクショや録画を検出してみる" class="headerlink" title="実際この C#コードを使ってスクショや録画を検出してみる"></a>実際この C#コードを使ってスクショや録画を検出してみる</h2><p>この SampleUsage クラスは、Unity で ScreenshotNotifier を使って iOS のスクリーンショット・画面録画を検出し、ログに出力するサンプルスクリプトです。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SampleUsage</span> : <span class="title">MonoBehaviour</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        ScreenshotNotifier.OnScreenshotDetected += ScreenshotNotifierOnOnScreenshotDetected;</span><br><span class="line">        ScreenshotNotifier.OnScreenRecordingStatusChanged += ScreenshotNotifierOnOnScreenRecordingStatusChanged;</span><br><span class="line"></span><br><span class="line">        ScreenshotNotifier.EnterCaptureProhibitSession();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ScreenshotNotifierOnOnScreenRecordingStatusChanged</span>(<span class="params"><span class="built_in">bool</span> isrecording</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;ScreenshotNotifierOnOnScreenRecordingStatusChanged: &quot;</span> + isrecording);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ScreenshotNotifierOnOnScreenshotDetected</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;ScreenshotNotifierOnOnScreenshotDetected&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDestroy</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        ScreenshotNotifier.ExitCaptureProhibitSession();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>実際に通知を実行するためのコードは Awake の初期化処理が一番大事です。</p>
+<p>(1) イベントハンドラの登録</p>
+<ul>
+<li>ScreenshotNotifier.OnScreenshotDetected<ul>
+<li>スクリーンショットが撮られたときに ScreenshotNotifierOnOnScreenshotDetected を実行するように設定。</li>
+</ul>
+</li>
+<li>ScreenshotNotifier.OnScreenRecordingStatusChanged<ul>
+<li>画面録画の開始・停止が検出されたときに ScreenshotNotifierOnOnScreenRecordingStatusChanged を実行するように設定。</li>
+</ul>
+</li>
+</ul>
+<p>(2) EnterCaptureProhibitSession() の呼び出し</p>
+<ul>
+<li>ScreenshotNotifier.EnterCaptureProhibitSession() を実行し、スクリーンショット・録画の検出を開始 する。</li>
+</ul>
+<p>これで、スクリーンショットや画面録画されるときに、関連する Debug.Log が発火します。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>この記事では、Unity アプリ内で iOS のスクリーンショットおよび画面録画を検出する方法について解説しました。スクリーンショットや画面録画のイベントを検出するために、iOS の通知機能を利用したネイティブライブラリを作成し、それを C# から呼び出す方法を紹介しました。</p>
+<h3 id="今後の展望"><a href="#今後の展望" class="headerlink" title="今後の展望"></a>今後の展望</h3><p>現在、iOS 版の実装を紹介しましたが、Android 版の実装にも挑戦したいと考えています。ただし、Android の場合、OS バージョンによって仕組みが異なるため、どの方法を採用するかで少し悩んでいます。もし良い方法が見つかれば、また別途共有したいと思いますので、楽しみにしていてください！</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/tags/">Tag</a></li>
+        
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#iOS-%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%E3%81%A8%E7%94%BB%E9%9D%A2%E9%8C%B2%E7%94%BB%E3%82%92%E3%80%8C%E9%80%9A%E7%9F%A5%E3%80%8D%E3%81%99%E3%82%8B%E4%BB%95%E7%B5%84%E3%81%BF"><span class="toc-number">1.</span> <span class="toc-text">iOS のスクリーンショットと画面録画を「通知」する仕組み</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GitHub-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA"><span class="toc-number">1.1.</span> <span class="toc-text">GitHub リポジトリ</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA"><span class="toc-number">2.</span> <span class="toc-text">ネイティブライブラリ</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9"><span class="toc-number">2.1.</span> <span class="toc-text">コールバック関数の定義</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="toc-number">2.2.</span> <span class="toc-text">コールバックの設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%BB%E9%9D%A2%E9%8C%B2%E7%94%BB%EF%BC%86%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%E3%81%AE%E7%9B%A3%E8%A6%96%E9%96%8B%E5%A7%8B-EnterCaptureProhibitSession"><span class="toc-number">2.3.</span> <span class="toc-text">画面録画＆スクリーンショットの監視開始 (EnterCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%A3%E8%A6%96%E3%81%AE%E7%B5%82%E4%BA%86-ExitCaptureProhibitSession"><span class="toc-number">2.4.</span> <span class="toc-text">監視の終了 (ExitCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8F%BE%E5%9C%A8%E3%81%AE%E9%8C%B2%E7%94%BB%E7%8A%B6%E6%85%8B%E3%82%92%E5%8F%96%E5%BE%97-CheckCaptureStatus"><span class="toc-number">2.5.</span> <span class="toc-text">現在の録画状態を取得(CheckCaptureStatus)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E3%82%B3%E3%83%BC%E3%83%89"><span class="toc-number">3.</span> <span class="toc-text">C#コード</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%83%87%E3%83%AA%E3%82%B2%E3%83%BC%E3%83%88%EF%BC%88%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E9%96%A2%E6%95%B0%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">デリゲート（コールバック関数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%A3%E8%A6%96%E9%96%8B%E5%A7%8B-EnterCaptureProhibitSession"><span class="toc-number">3.2.</span> <span class="toc-text">監視開始 (EnterCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%A3%E8%A6%96%E3%81%AE%E5%81%9C%E6%AD%A2-ExitCaptureProhibitSession"><span class="toc-number">3.3.</span> <span class="toc-text">監視の停止 (ExitCaptureProhibitSession)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A8%E3%81%AE%E9%80%A3%E6%90%BA"><span class="toc-number">3.4.</span> <span class="toc-text">ネイティブコードとの連携</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9F%E9%9A%9B%E3%81%93%E3%81%AE-C-%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%B9%E3%82%AF%E3%82%B7%E3%83%A7%E3%82%84%E9%8C%B2%E7%94%BB%E3%82%92%E6%A4%9C%E5%87%BA%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"><span class="toc-number">4.</span> <span class="toc-text">実際この C#コードを使ってスクショや録画を検出してみる</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="toc-number">5.</span> <span class="toc-text">まとめ</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8A%E5%BE%8C%E3%81%AE%E5%B1%95%E6%9C%9B"><span class="toc-number">5.1.</span> <span class="toc-text">今後の展望</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&text=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&is_video=false&description=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する&body=Check out this article: https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&title=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&name=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://notes.kinokonoko.io/ios_unity_screenshot_screenrecord_noti.html&t=Unity アプリで iOS のスクリーンショットと画面録画を検出し通知する"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    Kenny Ha
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
