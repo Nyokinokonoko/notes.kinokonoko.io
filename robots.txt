@@ -5,5 +5,5 @@ Disallow: /css/
 Disallow: /images/
 Disallow: /js/
 Disallow: /tags/
-Disallow: 404.html
+Disallow: /404.html
 Sitemap: https://notes.kinokonoko.io/sitemap.xml
