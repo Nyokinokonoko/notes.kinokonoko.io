@@ -6,4 +6,4 @@ Disallow: /images/
 Disallow: /js/
 Disallow: /tags/
 Disallow: 404.html
-Sitemap: /sitemap.xml
+Sitemap: https://notes.kinokonoko.io/sitemap.xml
